@@ -2,7 +2,7 @@
 package amodeus.amod;
 
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
 
 import amodeus.amodeus.options.ScenarioOptions;
 import amodeus.amodeus.options.ScenarioOptionsBase;
@@ -31,17 +31,16 @@ import amodeus.amod.ext.Static;
 /* package */ final class ScenarioPreparer {
     private ScenarioPreparer() { }
 
-    public static void main(String[] args) throws MalformedURLException, Exception {
+    public static void main(String[] args) throws IOException {
         File workingDirectory = MultiFileTools.getDefaultWorkingDirectory();
         run(workingDirectory);
     }
 
-    /** loads scenario preparer in the {@link File} workingDirectory @param
-     * workingDirectory
-     * 
-     * @throws MalformedURLException
-     * @throws Exception */
-    public static void run(File workingDirectory) throws MalformedURLException, Exception {
+    /** Loads scenario preparer in the given working directory.
+     *
+     * @param workingDirectory directory containing scenario config files
+     * @throws IOException if config files cannot be read or written */
+    public static void run(File workingDirectory) throws IOException {
         Static.setup();
         System.out.println("\n\n\n" + Static.glpInfo() + "\n\n\n");
 

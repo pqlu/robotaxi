@@ -2,6 +2,7 @@
 package amodeus.amod.analysis;
 
 import java.io.File;
+import java.io.IOException;
 
 import amodeus.amodeus.analysis.Analysis;
 import amodeus.amodeus.data.LocationSpec;
@@ -30,8 +31,8 @@ public final class CustomAnalysis {
      * contain the "output" folder that is compiled during a simulation. In the output folder, there
      * is a list of {@link SimulationObject} which contain the data stored for the simulation.
      * 
-     * @throws Exception */
-    public static void main(String[] args) throws Exception {
+     * @throws IOException if config files cannot be read */
+    public static void main(String[] args) throws IOException {
         Static.setup();
         File workingDirectory = MultiFileTools.getDefaultWorkingDirectory();
         ScenarioOptions scenOptions = new ScenarioOptions(workingDirectory, ScenarioOptionsBase.getDefault());

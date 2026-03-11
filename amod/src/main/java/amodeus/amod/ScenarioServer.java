@@ -2,7 +2,7 @@
 package amodeus.amod;
 
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.util.Objects;
 
 import amodeus.amodeus.dispatcher.DriveByDispatcher;
@@ -44,16 +44,15 @@ import amodeus.amod.generator.DemoGenerator;
 /* package */ final class ScenarioServer {
     private ScenarioServer() { }
 
-    public static void main(String[] args) throws MalformedURLException, Exception {
+    public static void main(String[] args) throws IOException {
         simulate(MultiFileTools.getDefaultWorkingDirectory());
     }
 
-    /** runs a simulation run using input data from Amodeus.properties, av.xml and
-     * MATSim config.xml
-     * 
-     * @throws MalformedURLException
-     * @throws Exception */
-    public static void simulate(File workingDirectory) throws MalformedURLException, Exception {
+    /** Runs a simulation using input data from Amodeus.properties, av.xml and MATSim config.xml.
+     *
+     * @param workingDirectory directory containing simulation config files
+     * @throws IOException if config files cannot be read */
+    public static void simulate(File workingDirectory) throws IOException {
         Static.setup();
         System.out.println("\n\n\n" + Static.glpInfo() + "\n\n\n");
 
