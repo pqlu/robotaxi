@@ -45,11 +45,14 @@ import amodeus.amod.generator.DemoGenerator;
  * directory and the button "Connect" is pressed. */
 /* package */ final class ScenarioServer {
     private static final Logger LOGGER = Logger.getLogger(ScenarioServer.class);
+    private static final double DEFAULT_TRAVEL_TIME_ALPHA = 0.05;
+    private static final double DEFAULT_TYPICAL_DURATION = 3600.0;
 
     private ScenarioServer() { }
 
     public static void main(String[] args) throws IOException {
-        simulate(MultiFileTools.getDefaultWorkingDirectory());
+        File workingDirectory = args.length > 0 ? new File(args[0]) : MultiFileTools.getDefaultWorkingDirectory();
+        simulate(workingDirectory);
     }
 
     /** Runs a simulation using input data from Amodeus.properties, av.xml and MATSim config.xml.
@@ -81,7 +84,7 @@ import amodeus.amod.generator.DemoGenerator;
         LOGGER.info("Loading config");
         GlobalAssert.that(configFile.exists());
         DvrpConfigGroup dvrpConfigGroup = new DvrpConfigGroup();
-        dvrpConfigGroup.setTravelTimeEstimationAlpha(0.05);
+        dvrpConfigGroup.setTravelTimeEstimationAlpha(DEFAULT_TRAVEL_TIME_ALPHA);
         Config config = ConfigUtils.loadConfig(configFile.toString(), new AmodeusConfigGroup(), dvrpConfigGroup);
         config.planCalcScore().addActivityParams(new ActivityParams("activity"));
 
@@ -91,7 +94,7 @@ import amodeus.amod.generator.DemoGenerator;
         /** MATSim requires typicalDuration on activities. For scenarios generated from
          * taxi data, a default of 1 hour is used. */
         for (ActivityParams activityParams : config.planCalcScore().getActivityParams())
-            activityParams.setTypicalDuration(3600.0);
+            activityParams.setTypicalDuration(DEFAULT_TYPICAL_DURATION);
 
         /** output directory for saving results */
         String outputdirectory = config.controler().getOutputDirectory();

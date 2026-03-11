@@ -31,7 +31,7 @@ import amodeus.amod.ext.Static;
     private ScenarioViewer() { }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        File workingDirectory = MultiFileTools.getDefaultWorkingDirectory();
+        File workingDirectory = args.length > 0 ? new File(args[0]) : MultiFileTools.getDefaultWorkingDirectory();
         run(workingDirectory);
     }
 
