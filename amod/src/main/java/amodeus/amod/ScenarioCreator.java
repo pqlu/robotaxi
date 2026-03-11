@@ -66,6 +66,6 @@ public enum ScenarioCreator {
         File workingDirectory = args.length > 1 ? new File(args[1]) : MultiFileTools.getDefaultWorkingDirectory();
         ScenarioCreation scenario = creator.in(workingDirectory);
         GlobalAssert.that(scenario.directory().exists());
-        System.out.println("Created a ready to use AMoDeus scenario in " + scenario.directory());
+        System.out.println("Created scenario in " + scenario.directory());
     }
 }

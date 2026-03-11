@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
+
 import amodeus.amodeus.dispatcher.DriveByDispatcher;
 import amodeus.amodeus.analysis.Analysis;
 import amodeus.amodeus.data.LocationSpec;
@@ -42,6 +44,8 @@ import amodeus.amod.generator.DemoGenerator;
  * viewed if the {@link ScenarioViewer} is executed in the same working
  * directory and the button "Connect" is pressed. */
 /* package */ final class ScenarioServer {
+    private static final Logger LOGGER = Logger.getLogger(ScenarioServer.class);
+
     private ScenarioServer() { }
 
     public static void main(String[] args) throws IOException {
@@ -54,7 +58,7 @@ import amodeus.amod.generator.DemoGenerator;
      * @throws IOException if config files cannot be read */
     public static void simulate(File workingDirectory) throws IOException {
         Static.setup();
-        System.out.println("\n\n\n" + Static.glpInfo() + "\n\n\n");
+        LOGGER.info(Static.glpInfo());
 
         /** Load the properties file */
         ScenarioOptions scenarioOptions = new ScenarioOptions(workingDirectory, ScenarioOptionsBase.getDefault());
@@ -74,7 +78,7 @@ import amodeus.amod.generator.DemoGenerator;
         SimulationServer.INSTANCE.setWaitForClients(waitForClients);
 
         /** load MATSim configs - including av.xml configurations, load routing packages */
-        System.out.println("Loading config");
+        LOGGER.info("Loading config");
         GlobalAssert.that(configFile.exists());
         DvrpConfigGroup dvrpConfigGroup = new DvrpConfigGroup();
         dvrpConfigGroup.setTravelTimeEstimationAlpha(0.05);
@@ -93,7 +97,7 @@ import amodeus.amod.generator.DemoGenerator;
         String outputdirectory = config.controler().getOutputDirectory();
 
         /** load MATSim scenario for simulation */
-        System.out.println("Loading scenario");
+        LOGGER.info("Loading scenario");
         Scenario scenario = ScenarioUtils.loadScenario(config);
         AddCoordinatesToActivities.run(scenario);
         Network network = scenario.getNetwork();

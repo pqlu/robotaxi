@@ -4,6 +4,8 @@ package amodeus.amod;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import amodeus.amodeus.options.ScenarioOptions;
 import amodeus.amodeus.options.ScenarioOptionsBase;
 import amodeus.amodeus.prep.ConfigCreator;
@@ -29,6 +31,8 @@ import amodeus.amod.ext.Static;
  * to run simulations quickly during testing, or the network should be reduced
  * to a certain area. */
 /* package */ final class ScenarioPreparer {
+    private static final Logger LOGGER = Logger.getLogger(ScenarioPreparer.class);
+
     private ScenarioPreparer() { }
 
     public static void main(String[] args) throws IOException {
@@ -42,7 +46,7 @@ import amodeus.amod.ext.Static;
      * @throws IOException if config files cannot be read or written */
     public static void run(File workingDirectory) throws IOException {
         Static.setup();
-        System.out.println("\n\n\n" + Static.glpInfo() + "\n\n\n");
+        LOGGER.info(Static.glpInfo());
 
         /** The {@link ScenarioOptions} loads 2 options files:
          * MATSim/AV configurations (config.xml) and
@@ -57,7 +61,7 @@ import amodeus.amod.ext.Static;
         Scenario scenario = ScenarioUtils.loadScenario(config);
         GeneratorConfig genConfig = avConfigGroup.getModes().values().iterator().next().getGeneratorConfig();
         int numRt = genConfig.getNumberOfVehicles();
-        System.out.println("NumberOfVehicles=" + numRt);
+        LOGGER.info("NumberOfVehicles=" + numRt);
 
         /** adaption of MATSim network, e.g., radius cutting */
         Network network = scenario.getNetwork();

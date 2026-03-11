@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import amodeus.amodeus.data.LocationSpec;
 import amodeus.amodeus.data.ReferenceFrame;
 import amodeus.amodeus.gfx.AmodeusComponent;
@@ -24,6 +26,8 @@ import amodeus.amod.ext.Static;
 
 /** the viewer allows to connect to the scenario server or to view saved simulation results. */
 /* package */ final class ScenarioViewer {
+    private static final Logger LOGGER = Logger.getLogger(ScenarioViewer.class);
+
     private ScenarioViewer() { }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -42,13 +46,13 @@ import amodeus.amod.ext.Static;
 
         /** load options */
         Config config = ConfigUtils.loadConfig(scenarioOptions.getPreparerConfigName());
-        System.out.println("MATSim config file: " + scenarioOptions.getPreparerConfigName());
+        LOGGER.info("MATSim config file: " + scenarioOptions.getPreparerConfigName());
         final File outputSubDirectory = new File(config.controler().getOutputDirectory()).getAbsoluteFile();
         if (!outputSubDirectory.isDirectory())
             throw new FileNotFoundException("output directory: " + outputSubDirectory.getAbsolutePath() + " not found.");
-        System.out.println("outputSubDirectory=" + outputSubDirectory.getAbsolutePath());
+        LOGGER.info("outputSubDirectory=" + outputSubDirectory.getAbsolutePath());
         File outputDirectory = outputSubDirectory.getParentFile();
-        System.out.println("showing simulation results from outputDirectory=" + outputDirectory);
+        LOGGER.info("showing simulation results from outputDirectory=" + outputDirectory);
 
         /** geographic information, .e.g., coordinate system */
         LocationSpec locationSpec = scenarioOptions.getLocationSpec();
@@ -56,9 +60,9 @@ import amodeus.amod.ext.Static;
 
         /** MATSim simulation network */
         Network network = NetworkLoader.fromConfigFile(new File(workingDirectory, scenarioOptions.getString("simuConfig")));
-        System.out.println("INFO network loaded");
-        System.out.println("INFO total links " + network.getLinks().size());
-        System.out.println("INFO total nodes " + network.getNodes().size());
+        LOGGER.info("network loaded");
+        LOGGER.info("total links " + network.getLinks().size());
+        LOGGER.info("total nodes " + network.getNodes().size());
 
         /** initializing the viewer */
         MatsimAmodeusDatabase db = MatsimAmodeusDatabase.initialize(network, referenceFrame);
@@ -69,7 +73,7 @@ import amodeus.amod.ext.Static;
 
         /** starting the viewer */
         ViewerConfig viewerConfig = ViewerConfig.from(db, workingDirectory);
-        System.out.println("Used viewer config: " + viewerConfig);
+        LOGGER.info("Used viewer config: " + viewerConfig);
         AmodeusViewerFrame amodeusViewerFrame = new AmodeusViewerFrame(amodeusComponent, outputDirectory, network, scenarioOptions);
         amodeusViewerFrame.setDisplayPosition(viewerConfig.settings.coord, viewerConfig.settings.zoom);
         amodeusViewerFrame.jFrame.setSize(viewerConfig.settings.dimensions);

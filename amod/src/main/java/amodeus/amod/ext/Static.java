@@ -10,12 +10,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import amodeus.amodeus.data.LocationSpec;
 import amodeus.amodeus.data.LocationSpecDatabase;
 import amodeus.amodeus.options.LPOptionsBase;
 import org.gnu.glpk.GLPK;
 
 public final class Static {
+    private static final Logger LOGGER = Logger.getLogger(Static.class);
+
     private Static() { }
 
     public static void setup() {
@@ -25,9 +29,9 @@ public final class Static {
 
     public static void checkGLPKLib() {
         try {
-            System.out.println("Working with GLPK version " + GLPK.glp_version());
+            LOGGER.info("Working with GLPK version " + GLPK.glp_version());
         } catch (Exception exception) {
-            System.err.println(glpInfo());
+            LOGGER.warn(glpInfo());
         }
     }
 
