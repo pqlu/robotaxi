@@ -28,8 +28,8 @@ import amodeus.amod.ext.Static;
  * example a user may want to restrict the population size to few 100s of agents
  * to run simulations quickly during testing, or the network should be reduced
  * to a certain area. */
-/* package */ enum ScenarioPreparer {
-    ;
+/* package */ final class ScenarioPreparer {
+    private ScenarioPreparer() { }
 
     public static void main(String[] args) throws MalformedURLException, Exception {
         File workingDirectory = MultiFileTools.getDefaultWorkingDirectory();

@@ -10,8 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
-public enum ResourceHandling {
-    ;
+public final class ResourceHandling {
+    private ResourceHandling() { }
 
     public static void copy(String source, Path target, boolean replaceExisting) throws Exception {
         copy(ResourceHandling.class, source, target, replaceExisting);

@@ -8,8 +8,8 @@ import org.json.JSONObject;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public enum NominatimJSON {
-    ;
+public final class NominatimJSON {
+    private NominatimJSON() { }
 
     /** @return coordinates as {@link Tensor} in format
      *         {long,lat} for the json response of the Nominatim URL passed

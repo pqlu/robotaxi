@@ -8,8 +8,8 @@ import amodeus.amodeus.util.matsim.xml.XmlCustomModifier;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
-public enum Pt2MatsimXML {
-    ;
+public final class Pt2MatsimXML {
+    private Pt2MatsimXML() { }
 
     public static void toLocalFileSystem(File xmlFile, String systemSpecificPath) throws Exception {
 

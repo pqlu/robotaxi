@@ -7,8 +7,8 @@ import java.util.Collection;
 import amodeus.amodeus.util.math.GlobalAssert;
 import amodeus.amodtaxi.scenario.Consistency;
 
-public enum ReadTraceFiles {
-    ;
+public final class ReadTraceFiles {
+    private ReadTraceFiles() { }
 
     public static DayTaxiRecord in(Collection<File> trcFls, CsvFleetReaderInterface reader) throws Exception {
         /** part 1: filling with data */

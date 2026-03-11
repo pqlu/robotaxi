@@ -23,8 +23,8 @@ import org.matsim.core.config.ConfigUtils;
 import amodeus.amod.ext.Static;
 
 /** the viewer allows to connect to the scenario server or to view saved simulation results. */
-/* package */ enum ScenarioViewer {
-    ;
+/* package */ final class ScenarioViewer {
+    private ScenarioViewer() { }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         File workingDirectory = MultiFileTools.getDefaultWorkingDirectory();

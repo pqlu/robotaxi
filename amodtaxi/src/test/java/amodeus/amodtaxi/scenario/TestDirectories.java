@@ -5,8 +5,8 @@ import java.io.File;
 import amodeus.amodeus.util.io.Locate;
 import amodeus.amodeus.util.io.MultiFileTools;
 
-public enum TestDirectories {
-    ;
+public final class TestDirectories {
+    private TestDirectories() { }
 
     public static final File WORKING = new File(MultiFileTools.getDefaultWorkingDirectory(), "test-scenario");
     public static final File CHICAGO = new File(Locate.repoFolder(Pt2MatsimXML.class, "amodtaxi"), "src/test/resources/chicagoScenario");

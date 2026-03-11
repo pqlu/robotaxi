@@ -19,8 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * The algorithm ensures that the last N elements at the end of the list
  * are 100% random if we used a perfect random function."
  * https://stackoverflow.com/questions/4702036/take-n-random-elements-from-a-liste */
-public enum RandomElements {
-    ;
+public final class RandomElements {
+    private RandomElements() { }
     /** Hint: function is not thread safe
      * 
      * @param <T>

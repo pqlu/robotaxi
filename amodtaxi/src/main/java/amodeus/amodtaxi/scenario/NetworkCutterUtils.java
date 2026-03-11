@@ -9,8 +9,8 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.Node;
 
 
-public enum NetworkCutterUtils {
-    ;
+public final class NetworkCutterUtils {
+    private NetworkCutterUtils() { }
 
     public static Network modeFilter(Network originalNetwork, LinkModes modes) {
         if (modes.allModesAllowed) {

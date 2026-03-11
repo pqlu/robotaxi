@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 import amodeus.amodeus.util.math.GlobalAssert;
 import ch.ethz.idsc.tensor.io.DeleteDirectory;
 
-public enum FinishedScenario {
-    ;
+public final class FinishedScenario {
+    private FinishedScenario() { }
 
     public static void copyToDir(String processingDir, String destinDir, String... fileNames) throws IOException {
         System.out.println("Copying scenario from : " + processingDir);

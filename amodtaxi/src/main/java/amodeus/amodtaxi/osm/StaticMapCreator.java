@@ -12,8 +12,8 @@ import org.matsim.pt2matsim.run.Osm2MultimodalNetwork;
 
 import amodeus.amodtaxi.scenario.ScenarioLabels;
 
-public enum StaticMapCreator {
-    ;
+public final class StaticMapCreator {
+    private StaticMapCreator() { }
 
     public static void now(File directory) throws IOException {
         now(directory, ScenarioLabels.osmData, ScenarioLabels.amodeusFile, ScenarioLabels.pt2MatSettings);

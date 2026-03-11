@@ -41,8 +41,8 @@ import amodeus.amod.generator.DemoGenerator;
 /** This class runs an AMoDeus simulation based on MATSim. The results can be
  * viewed if the {@link ScenarioViewer} is executed in the same working
  * directory and the button "Connect" is pressed. */
-/* package */ enum ScenarioServer {
-    ;
+/* package */ final class ScenarioServer {
+    private ScenarioServer() { }
 
     public static void main(String[] args) throws MalformedURLException, Exception {
         simulate(MultiFileTools.getDefaultWorkingDirectory());

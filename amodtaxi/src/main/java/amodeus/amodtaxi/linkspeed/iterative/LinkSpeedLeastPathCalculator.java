@@ -9,8 +9,8 @@ import org.matsim.core.router.costcalculators.OnlyTimeDependentTravelDisutility;
 import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.TravelTime;
 
-public enum LinkSpeedLeastPathCalculator {
-    ;
+public final class LinkSpeedLeastPathCalculator {
+    private LinkSpeedLeastPathCalculator() { }
 
     public static LeastCostPathCalculator from(Network network, LinkSpeedDataContainer lsData) {
         TravelTime travelTime = new LSDataTravelTime(lsData);

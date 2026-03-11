@@ -13,8 +13,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import org.matsim.api.core.v01.Coord;
 
-public enum TaxiStampHelpers {
-    ;
+public final class TaxiStampHelpers {
+    private TaxiStampHelpers() { }
 
     /** @param taxiStamps {@link Collection} of {@link TaxiStamp}
      * @return {minLat, maxLat, minLong, maxLong} */

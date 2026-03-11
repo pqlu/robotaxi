@@ -10,8 +10,8 @@ import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public enum NominatimHelper {
-    ;
+public final class NominatimHelper {
+    private NominatimHelper() { }
     public static String queryInterface(String https_url) {
         String returnString = "";
         URL url;

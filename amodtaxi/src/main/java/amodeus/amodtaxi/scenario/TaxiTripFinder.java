@@ -12,8 +12,8 @@ import amodeus.amodeus.net.TensorCoords;
 import amodeus.amodeus.taxitrip.TaxiTrip;
 import amodeus.amodtaxi.trace.TaxiStamp;
 
-public enum TaxiTripFinder {
-    ;
+public final class TaxiTripFinder {
+    private TaxiTripFinder() { }
 
     /** @return {@link Collection} with all {@link TaxiTrip}s found in the
      * @param timeTaxiStamps containing the recorded steps for taxi with

@@ -9,8 +9,8 @@ import java.util.Collections;
 import amodeus.amodeus.util.io.CopyFiles;
 import amodeus.amodtaxi.util.ResourceHandling;
 
-public enum ScenarioSetup {
-    ;
+public final class ScenarioSetup {
+    private ScenarioSetup() { }
 
     public static void in(File workingDir, File resourcesDir, String... additionals) throws Exception {
         /** copy relevant files containing settings for scenario generation */

@@ -3,8 +3,8 @@ package amodeus.amodtaxi.util;
 
 import java.time.LocalDate;
 
-public enum LocalDateConvert {
-    ;
+public final class LocalDateConvert {
+    private LocalDateConvert() { }
 
     public static LocalDate ofOptions(String dateString) {
         String[] split = dateString.split("/");

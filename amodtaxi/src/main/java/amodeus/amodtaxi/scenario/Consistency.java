@@ -14,8 +14,8 @@ import org.matsim.api.core.v01.population.Population;
 import amodeus.amodtaxi.trace.TaxiStamp;
 import amodeus.amodtaxi.trace.TaxiTrail;
 
-public enum Consistency {
-    ;
+public final class Consistency {
+    private Consistency() { }
 
     public static void checkTrail(Collection<TaxiTrail> trails) {
         /** are all values recorded properly */

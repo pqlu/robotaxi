@@ -11,8 +11,8 @@ import java.util.List;
 import amodeus.amodeus.util.io.Unzip;
 import amodeus.socket.core.SocketScenarioDownload;
 
-public enum SocketScenarioResource {
-    ;
+public final class SocketScenarioResource {
+    private SocketScenarioResource() { }
 
     private static final String SCENARIO_ZIP = "scenario.zip";
 

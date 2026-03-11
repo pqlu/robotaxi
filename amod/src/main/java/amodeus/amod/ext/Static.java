@@ -15,8 +15,8 @@ import amodeus.amodeus.data.LocationSpecDatabase;
 import amodeus.amodeus.options.LPOptionsBase;
 import org.gnu.glpk.GLPK;
 
-public enum Static {
-    ;
+public final class Static {
+    private Static() { }
 
     public static void setup() {
         for (LocationSpec locationSpec : UserLocationSpecs.values())

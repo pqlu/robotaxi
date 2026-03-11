@@ -32,8 +32,8 @@ import ch.ethz.idsc.tensor.sca.Round;
  * 
  * Usage:
  * java -cp target/amod-VERSION.jar amod.socket.SocketHost [city] */
-public enum SocketHost {
-    ;
+public final class SocketHost {
+    private SocketHost() { }
     public static final int PORT = 9382;
     private static final String ENV_SCENARIO = "SCENARIO";
     private static final String ENV_FLEET_SIZE = "FLEET_SIZE";

@@ -23,8 +23,8 @@ import amodeus.amod.ext.Static;
  * elements can be easily added. In this example, we present the case in which for every
  * {@link RoboTaxi} the number of served requests is recorded and then a Histogram image is added
  * to the HTML report */
-public enum CustomAnalysis {
-    ;
+public final class CustomAnalysis {
+    private CustomAnalysis() { }
 
     /** to be executed in simulation directory to perform analysis, i.e., the directory must
      * contain the "output" folder that is compiled during a simulation. In the output folder, there

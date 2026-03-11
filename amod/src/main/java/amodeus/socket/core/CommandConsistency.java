@@ -8,8 +8,8 @@ import amodeus.amodeus.util.math.GlobalAssert;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public enum CommandConsistency {
-    ;
+public final class CommandConsistency {
+    private CommandConsistency() { }
 
     /** Performs the following consistency checks on the commands received and fails if >=1
      * check is failing:

@@ -6,8 +6,8 @@ import amodeus.amodeus.util.io.Locate;
 import amodeus.amodtaxi.scenario.ScenarioLabels;
 import amodeus.amodtaxi.scenario.ScenarioSetup;
 
-public enum TorontoSetup {
-	;
+public final class TorontoSetup {
+	private TorontoSetup() { }
 	
 	public static void in(File workingDir) throws Exception {
 		TorontoGeoInformation.setup();

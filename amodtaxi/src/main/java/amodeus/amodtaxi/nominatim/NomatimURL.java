@@ -3,8 +3,8 @@ package amodeus.amodtaxi.nominatim;
 
 import java.util.List;
 
-public enum NomatimURL {
-    ;
+public final class NomatimURL {
+    private NomatimURL() { }
 
     /** @return a url to request a geo JSON from the nominatim API for the
      *         query including the {@link List} of Strings @param elements, usage

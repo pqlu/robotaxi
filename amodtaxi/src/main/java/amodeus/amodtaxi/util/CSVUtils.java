@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum CSVUtils {
-    ;
+public final class CSVUtils {
+    private CSVUtils() { }
 
     /** @param line
      * @param regex e.g., separator = ";"

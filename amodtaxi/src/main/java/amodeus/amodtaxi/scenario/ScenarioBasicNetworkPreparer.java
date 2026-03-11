@@ -13,8 +13,8 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.algorithms.NetworkCleaner;
 import org.matsim.core.network.io.NetworkWriter;
 
-public enum ScenarioBasicNetworkPreparer {
-    ;
+public final class ScenarioBasicNetworkPreparer {
+    private ScenarioBasicNetworkPreparer() { }
 
     public static Network run(File processingDir) {
         // load the pt2matsim network

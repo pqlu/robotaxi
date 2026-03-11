@@ -14,8 +14,8 @@ import org.matsim.api.core.v01.network.Link;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public enum PathHandlerUtil {
-    ;
+public final class PathHandlerUtil {
+    private PathHandlerUtil() { }
 
     public static void validityCheck(TaxiTrip taxiTrip, AmodeusTimeConvert timeConvert, //
             LocalDate simulationDate, FastLinkLookup fll) {
