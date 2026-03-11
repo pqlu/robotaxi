@@ -10,7 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
+
 public final class ResourceHandling {
+    private static final Logger LOGGER = Logger.getLogger(ResourceHandling.class);
+
     private ResourceHandling() { }
 
     public static void copy(String source, Path target, boolean replaceExisting) throws Exception {
@@ -42,7 +46,7 @@ public final class ResourceHandling {
             }
             return tempFile;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to load resource: " + resourcePath, e);
             return null;
         }
     }

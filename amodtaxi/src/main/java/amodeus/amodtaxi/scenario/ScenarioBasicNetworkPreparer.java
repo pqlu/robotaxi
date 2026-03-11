@@ -4,6 +4,8 @@ package amodeus.amodtaxi.scenario;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import amodeus.amodeus.util.io.GZHandler;
 import amodeus.amodeus.util.math.GlobalAssert;
 import amodeus.amodeus.util.matsim.NetworkLoader;
@@ -14,6 +16,8 @@ import org.matsim.core.network.algorithms.NetworkCleaner;
 import org.matsim.core.network.io.NetworkWriter;
 
 public final class ScenarioBasicNetworkPreparer {
+    private static final Logger LOGGER = Logger.getLogger(ScenarioBasicNetworkPreparer.class);
+
     private ScenarioBasicNetworkPreparer() { }
 
     public static Network run(File processingDir) {
@@ -40,7 +44,7 @@ public final class ScenarioBasicNetworkPreparer {
         try {
             GZHandler.extract(fileExportGz, fileExport);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to extract gz file", e);
         }
 
         return filteredNetwork;

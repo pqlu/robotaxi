@@ -10,37 +10,40 @@ import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.log4j.Logger;
+
 public final class NominatimHelper {
+    private static final Logger LOGGER = Logger.getLogger(NominatimHelper.class);
+
     private NominatimHelper() { }
+
     public static String queryInterface(String https_url) {
         String returnString = "";
-        URL url;
         try {
-            url = new URL(https_url);
+            URL url = new URL(https_url);
             HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-            // dump all the content
-            returnString = NominatimHelper.readInterfaceResponse(con);
+            returnString = readInterfaceResponse(con);
             con.disconnect();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.error("Malformed URL: " + https_url, e);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to query Nominatim: " + https_url, e);
         }
         return returnString;
     }
 
     private static String readInterfaceResponse(HttpsURLConnection con) {
-        String allOfIt = "";
+        StringBuilder result = new StringBuilder();
         if (Objects.nonNull(con)) {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
                 String input;
                 while ((input = br.readLine()) != null) {
-                    allOfIt = allOfIt + input;
+                    result.append(input);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("Failed to read Nominatim response", e);
             }
         }
-        return allOfIt;
+        return result.toString();
     }
 }

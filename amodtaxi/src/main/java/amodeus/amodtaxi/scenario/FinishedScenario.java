@@ -7,15 +7,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.log4j.Logger;
+
 import amodeus.amodeus.util.math.GlobalAssert;
 import ch.ethz.idsc.tensor.io.DeleteDirectory;
 
 public final class FinishedScenario {
+    private static final Logger LOGGER = Logger.getLogger(FinishedScenario.class);
+
     private FinishedScenario() { }
 
     public static void copyToDir(String processingDir, String destinDir, String... fileNames) throws IOException {
-        System.out.println("Copying scenario from : " + processingDir);
-        System.out.println("to :                    " + destinDir);
+        LOGGER.info("Copying scenario from : " + processingDir);
+        LOGGER.info("to :                    " + destinDir);
 
         File destinDirFile = new File(destinDir);
         if (destinDirFile.exists())
@@ -30,7 +34,7 @@ public final class FinishedScenario {
                 try {
                     Files.copy(source, target /* , options */);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error("Failed to copy " + fileName, e);
                 }
             }
         }
