@@ -13,8 +13,8 @@ import org.matsim.contrib.dvrp.run.ModalProviders.InstanceGetter;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.vehicles.Vehicle;
 
-/** This is a nonfunctional sample demonstrating of how to include a custom router
- * to AMoDeus which is not the standard choice of the Paralllel Djikstra router used
+/** This is a nonfunctional sample demonstrating how to include a custom router
+ * to AMoDeus which is not the standard choice of the Parallel Dijkstra router used
  * normally to calculate the path for {@link RoboTaxi} */
 /* package */ class CustomRouter implements AmodeusRouter {
 

@@ -2,6 +2,7 @@ package amodeus.amodtaxi.scenario.toronto;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import amodeus.amodeus.util.LocalDateTimes;
 import amodeus.amodeus.util.io.CsvReader.Row;
@@ -14,6 +15,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class TripsReaderToronto extends TaxiTripsReader {
+    private static final String SYNTHETIC_TAXI_ID = "toronto_taxi";
+    private final AtomicInteger tripCounter = new AtomicInteger(0);
 
     public TripsReaderToronto() {
         super(",");
@@ -21,13 +24,12 @@ public class TripsReaderToronto extends TaxiTripsReader {
 
     @Override
     public String getTripId(Row row) {
-        // TODO Auto-generated method stub
-        return null;
+        return "trip_" + tripCounter.getAndIncrement();
     }
 
     @Override
     public final String getTaxiId(Row line) {
-        return null;
+        return SYNTHETIC_TAXI_ID;
     }
 
     @Override

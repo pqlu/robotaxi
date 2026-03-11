@@ -45,18 +45,26 @@ public enum ScenarioCreator {
 
     // ---
 
+    private static final Map<String, ScenarioCreator> SCENARIOS_BY_NAME = new HashMap<>();
+    static {
+        SCENARIOS_BY_NAME.put("chicago", CHICAGO);
+        SCENARIOS_BY_NAME.put("sanfrancisco", SAN_FRANCISCO);
+        SCENARIOS_BY_NAME.put("san_francisco", SAN_FRANCISCO);
+        SCENARIOS_BY_NAME.put("san-francisco", SAN_FRANCISCO);
+        SCENARIOS_BY_NAME.put("toronto", TORONTO);
+    }
+
     public static void main(String[] args) throws Exception {
         if (args.length < 1)
-            throw new RuntimeException("No scenario specified! Provide scenario name as argument.");
+            throw new IllegalArgumentException("No scenario specified. Available: " + SCENARIOS_BY_NAME.keySet());
 
-        Map<String,ScenarioCreator> scenarios = new HashMap<>();
-        scenarios.put("chicago", ScenarioCreator.CHICAGO);
-        scenarios.put("sanfrancisco", ScenarioCreator.SAN_FRANCISCO);
-        scenarios.put("san_francisco", ScenarioCreator.SAN_FRANCISCO);
-        scenarios.put("san-francisco", ScenarioCreator.SAN_FRANCISCO);
-        scenarios.put("toronto", ScenarioCreator.TORONTO);
+        String scenarioName = args[0].toLowerCase();
+        ScenarioCreator creator = SCENARIOS_BY_NAME.get(scenarioName);
+        if (creator == null)
+            throw new IllegalArgumentException("Unknown scenario: " + scenarioName + ". Available: " + SCENARIOS_BY_NAME.keySet());
 
-        ScenarioCreation scenario = scenarios.get(args[0].toLowerCase()).in(MultiFileTools.getDefaultWorkingDirectory());
+        File workingDirectory = args.length > 1 ? new File(args[1]) : MultiFileTools.getDefaultWorkingDirectory();
+        ScenarioCreation scenario = creator.in(workingDirectory);
         GlobalAssert.that(scenario.directory().exists());
         System.out.println("Created a ready to use AMoDeus scenario in " + scenario.directory());
     }

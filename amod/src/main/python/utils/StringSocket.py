@@ -1,25 +1,38 @@
 import socket
+from typing import Union
 from utils import Translator
 
 
-class StringSocket(socket.socket):
-    def __init__(self, ip, port=9382):
+class StringSocket:
+    """Socket wrapper for line-based string communication with the AMoDeus server."""
+
+    DEFAULT_PORT = 9382
+    BUFFER_SIZE = 4096
+
+    def __init__(self, ip: str, port: int = DEFAULT_PORT):
         try:
-            super(StringSocket, self).__init__(socket.AF_INET, socket.SOCK_STREAM)
-            self.connect((ip, port))
-        except socket.error:
-            raise IOError("Unable to create StringSocket!")
-        self.buffer = ''
+            self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._socket.connect((ip, port))
+        except socket.error as e:
+            raise IOError(f"Unable to connect to {ip}:{port}") from e
+        self._buffer = ''
 
-    def writeln(self, message):
-        assert isinstance(message, (str, list)), "Input %s <%s> has to be string or list!" % (message, type(message))
+    def writeln(self, message: Union[str, list]) -> None:
+        assert isinstance(message, (str, list)), \
+            "Input %s <%s> must be str or list" % (message, type(message))
         msg = Translator.listToTensorString(message) if isinstance(message, list) else message
-        self.sendall(str.encode(msg + '\n'))
+        self._socket.sendall(str.encode(msg + '\n'))
 
-    def readLine(self, buffer=4096):
-        while '\n' not in self.buffer:
-            self.buffer += self.recv(buffer).decode()
-        lines = self.buffer.split('\n')
+    def read_line(self):
+        while '\n' not in self._buffer:
+            data = self._socket.recv(self.BUFFER_SIZE).decode()
+            if not data:
+                return None
+            self._buffer += data
+        lines = self._buffer.split('\n')
         line = lines.pop(0)
-        self.buffer = '\n'.join(lines)
+        self._buffer = '\n'.join(lines)
         return Translator.tensorStringToList(line)
+
+    def close(self) -> None:
+        self._socket.close()

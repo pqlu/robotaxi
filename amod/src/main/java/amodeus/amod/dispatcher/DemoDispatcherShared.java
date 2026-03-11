@@ -31,9 +31,14 @@ import org.matsim.core.router.util.TravelTime;
  * Passenger 4 is less lucky as the {@link RoboTaxi} first visits the city's North pole (northern most link)
  * before passenger 4 is finally dropped of and the procedure starts from beginning. */
 public class DemoDispatcherShared extends SharedRebalancingDispatcher {
+    private static final long RANDOM_SEED = 1234;
+    private static final int DEFAULT_DISPATCH_PERIOD = 30;
+    private static final int DEFAULT_REBALANCE_PERIOD = 1800;
+    private static final int MIN_REQUESTS_FOR_SHARED = 4;
+
     private final int dispatchPeriod;
     private final int rebalancePeriod;
-    private final Random randGen = new Random(1234);
+    private final Random randGen = new Random(RANDOM_SEED);
     private final Link cityNorthPole;
     private final List<Link> equatorLinks;
 
@@ -45,8 +50,8 @@ public class DemoDispatcherShared extends SharedRebalancingDispatcher {
         this.cityNorthPole = getNorthPole(network);
         this.equatorLinks = getEquator(network);
         SafeConfig safeConfig = SafeConfig.wrap(operatorConfig.getDispatcherConfig());
-        dispatchPeriod = safeConfig.getInteger("dispatchPeriod", 30);
-        rebalancePeriod = safeConfig.getInteger("rebalancingPeriod", 1800);
+        dispatchPeriod = safeConfig.getInteger("dispatchPeriod", DEFAULT_DISPATCH_PERIOD);
+        rebalancePeriod = safeConfig.getInteger("rebalancingPeriod", DEFAULT_REBALANCE_PERIOD);
         Collections.shuffle(new ArrayList<>(network.getLinks().values()), randGen);
     }
 
@@ -57,7 +62,7 @@ public class DemoDispatcherShared extends SharedRebalancingDispatcher {
         if (round_now % dispatchPeriod == 0) {
             /** assignment of {@link RoboTaxi}s */
             for (RoboTaxi sharedRoboTaxi : getDivertableUnassignedRoboTaxis()) {
-                if (getUnassignedPassengerRequests().size() >= 4) {
+                if (getUnassignedPassengerRequests().size() >= MIN_REQUESTS_FOR_SHARED) {
 
                     /** select 4 requests */
                     PassengerRequest firstRequest = getUnassignedPassengerRequests().get(0);

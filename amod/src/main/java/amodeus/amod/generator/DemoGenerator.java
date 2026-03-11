@@ -2,7 +2,6 @@
 package amodeus.amod.generator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,21 +29,22 @@ import org.matsim.core.gbl.MatsimRandom;
  * and all vehicles are placed on these random links. */
 public class DemoGenerator implements AmodeusGenerator {
     private static final Logger LOGGER = Logger.getLogger(DemoGenerator.class);
-    // ---
+    private static final int NUM_RANDOM_PLACEMENT_LINKS = 10;
+
     private final int capacity;
     private final AmodeusModeConfig operatorConfig;
-    private final Collection<Link> randomLinks = new ArrayList<>();
+    private final List<Link> randomLinks;
 
     public DemoGenerator(AmodeusModeConfig operatorConfig, Network network, int capacity) {
         this.operatorConfig = operatorConfig;
         this.capacity = capacity;
 
-        /** determine 10 random links in the network */
-        int bound = network.getLinks().size();
-        for (int i = 0; i < 10; ++i) {
-            int elemRand = MatsimRandom.getRandom().nextInt(bound);
-            Link link = network.getLinks().values().stream().skip(elemRand).findFirst().get();
-            randomLinks.add(link);
+        /** determine random links in the network for vehicle placement */
+        List<Link> allLinks = new ArrayList<>(network.getLinks().values());
+        this.randomLinks = new ArrayList<>();
+        for (int i = 0; i < NUM_RANDOM_PLACEMENT_LINKS; ++i) {
+            int elemRand = MatsimRandom.getRandom().nextInt(allLinks.size());
+            randomLinks.add(allLinks.get(elemRand));
         }
     }
 
@@ -55,9 +55,9 @@ public class DemoGenerator implements AmodeusGenerator {
         while (generatedVehicles < operatorConfig.getGeneratorConfig().getNumberOfVehicles()) {
             ++generatedVehicles;
 
-            /** select one of the 10 random links for placement */
+            /** select one of the random links for placement */
             int elemRand = MatsimRandom.getRandom().nextInt(randomLinks.size());
-            Link linkSel = randomLinks.stream().skip(elemRand).findFirst().get();
+            Link linkSel = randomLinks.get(elemRand);
 
             LOGGER.info("car placed at link " + linkSel);
 

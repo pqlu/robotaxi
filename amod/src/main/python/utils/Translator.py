@@ -1,36 +1,37 @@
 import ast
 import re
+from typing import Any, List, Union
 from utils.RoboTaxiStatus import RoboTaxiStatus
 
 
-def tensorStringToList(string):
-    """turn java tensor string representation into python list"""
+def tensorStringToList(string: str) -> Union[list, str, None]:
+    """Turn Java Tensor string representation into a Python list."""
     assert isinstance(string, str)
-    # make string readable for ast.literal_eval
-    s = re.sub(r" ?\[[^)]+\]", "", string).replace('{', '[').replace('}', ']').replace('-Infinity', "'-Infinity'")
+    # strip unit annotations like [m], [s], etc.
+    s = re.sub(r" ?\[[^\]]+\]", "", string)
+    # convert Tensor braces to Python list brackets
+    s = s.replace('{', '[').replace('}', ']').replace('-Infinity', "'-Infinity'")
     for status in RoboTaxiStatus.values():
         s = s.replace(status, "'%s'" % status)
-    # evaluate string
     try:
         array = ast.literal_eval(s)
     except (ValueError, SyntaxError):
-        raise ValueError("Unable to translate '%s'!" % string)
-    else:
-        return replaceStatus(array)  # insert meaningful values
+        raise ValueError("Unable to translate '%s'" % string)
+    return _replace_status(array)
 
 
-def listToTensorString(array):
-    """turn python list into java tensor string representation"""
+def listToTensorString(array: list) -> str:
+    """Turn Python list into Java Tensor string representation."""
     assert isinstance(array, list)
-    a = [listToTensorString(element) if isinstance(element, list) else element for element in array]
-    return '{%s}' % ', '.join(list(map(str, a)))
+    elements = [listToTensorString(el) if isinstance(el, list) else el for el in array]
+    return '{%s}' % ', '.join(map(str, elements))
 
 
-def replaceStatus(element):
+def _replace_status(element: Any) -> Any:
+    """Recursively replace status strings with RoboTaxiStatus enum values."""
     if isinstance(element, list):
-        return [replaceStatus(e) for e in element]
-    else:
-        try:
-            return RoboTaxiStatus[element]
-        except KeyError:
-            return element
+        return [_replace_status(e) for e in element]
+    try:
+        return RoboTaxiStatus[element]
+    except KeyError:
+        return element

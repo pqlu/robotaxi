@@ -67,10 +67,10 @@ import amodeus.amod.ext.Static;
         /** adaption of MATSim population, e.g., radius cutting */
         Population population = scenario.getPopulation();
 
-        // Population cutting
+        /** Population cutting */
+        long populationSeed = 1234;
         TheApocalypse.reducesThe(population).toNoMoreThan(scenarioOptions.getMaxPopulationSize());
-        long apoSeed = 1234;
-        PopulationPreparer.run(network, population, scenarioOptions, config, apoSeed);
+        PopulationPreparer.run(network, population, scenarioOptions, config, populationSeed);
 
         /** creating a virtual network, e.g., for operational policies requiring a graph
          * structure on the city */

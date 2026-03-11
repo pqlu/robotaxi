@@ -26,18 +26,21 @@ import org.matsim.core.router.util.TravelTime;
 /** Dispatcher sends vehicles to all links in the network and lets them pickup
  * any customers which are waiting along the road. */
 public class DemoDispatcher extends RebalancingDispatcher {
+    private static final double REBALANCE_PROBABILITY = 0.99;
+    private static final int DEFAULT_REBALANCING_PERIOD = 120;
+    private static final long RANDOM_SEED = 1234;
+
     private final List<Link> links;
-    private final double rebPos = 0.99;
-    private final Random randGen = new Random(1234);
+    private final Random randGen = new Random(RANDOM_SEED);
     private final int rebalancingPeriod;
-    private int total_abortTrip = 0;
+    private int totalAbortedTrips = 0;
 
     private DemoDispatcher(Config config, AmodeusModeConfig operatorConfig, TravelTime travelTime, //
             AmodeusRouter router, EventsManager eventsManager, Network network, MatsimAmodeusDatabase db) {
         super(config, operatorConfig, travelTime, router, eventsManager, db);
         links = new ArrayList<>(network.getLinks().values());
         SafeConfig safeConfig = SafeConfig.wrap(operatorConfig.getDispatcherConfig());
-        rebalancingPeriod = safeConfig.getInteger("rebalancingPeriod", 120);
+        rebalancingPeriod = safeConfig.getInteger("rebalancingPeriod", DEFAULT_REBALANCING_PERIOD);
     }
 
     @Override
@@ -46,13 +49,13 @@ public class DemoDispatcher extends RebalancingDispatcher {
         Map<RoboTaxi, PassengerRequest> stopDrivingBy = DrivebyRequestStopper //
                 .stopDrivingBy(DispatcherUtils.getPassengerRequestsAtLinks(getPassengerRequests()), //
                         getDivertableRoboTaxis(), this::setRoboTaxiPickup);
-        total_abortTrip += stopDrivingBy.size();
+        totalAbortedTrips += stopDrivingBy.size();
 
         /** send vehicles to travel around the city to random links (random loitering) */
         final long round_now = Math.round(now);
         if (round_now % rebalancingPeriod == 0 && 0 < getPassengerRequests().size())
             for (RoboTaxi roboTaxi : getDivertableRoboTaxis())
-                if (rebPos > randGen.nextDouble())
+                if (REBALANCE_PROBABILITY > randGen.nextDouble())
                     setRoboTaxiRebalance(roboTaxi, pollNextDestination());
     }
 
@@ -62,7 +65,7 @@ public class DemoDispatcher extends RebalancingDispatcher {
 
     @Override
     protected String getInfoLine() {
-        return String.format("%s AT=%5d", super.getInfoLine(), total_abortTrip);
+        return String.format("%s AT=%5d", super.getInfoLine(), totalAbortedTrips);
     }
 
     public static class Factory implements AVDispatcherFactory {

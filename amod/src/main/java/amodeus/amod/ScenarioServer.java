@@ -5,8 +5,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Objects;
 
-import amodeus.amodeus.dispatcher.AdaptiveRealTimeRebalancingPolicy;
-import amodeus.amodeus.dispatcher.FeedforwardFluidicRebalancingPolicy;
 import amodeus.amodeus.dispatcher.DriveByDispatcher;
 import amodeus.amodeus.analysis.Analysis;
 import amodeus.amodeus.data.LocationSpec;
@@ -87,10 +85,8 @@ import amodeus.amod.generator.DemoGenerator;
         config.qsim().setStartTime(0.0);
         config.qsim().setSimStarttimeInterpretation(QSimConfigGroup.StarttimeInterpretation.onlyUseStarttime);
 
-        /** MATSim does not allow the typical duration not to be set, therefore for scenarios
-         * generated from taxi data such as the "SanFrancisco" scenario, it is set to 1 hour. */
-        // TODO @Sebastian fix this to meaningful values, remove, or add comment
-        // this was added because there are sometimes problems, is there a more elegant option?
+        /** MATSim requires typicalDuration on activities. For scenarios generated from
+         * taxi data, a default of 1 hour is used. */
         for (ActivityParams activityParams : config.planCalcScore().getActivityParams())
             activityParams.setTypicalDuration(3600.0);
 
@@ -110,34 +106,21 @@ import amodeus.amod.generator.DemoGenerator;
         Controler controller = new Controler(scenario);
         AmodeusConfigurator.configureController(controller, db, scenarioOptions);
 
-        /** With the subsequent lines an additional user-defined dispatcher is added, functionality
-         * in class
-         * DemoDispatcher, as long as the dispatcher was not selected in the file av.xml, it is not
-         * used in the simulation. */
-//        controller.addOverridingModule(new AbstractModule() {
-//            @Override
-//            public void install() {
-//                AmodeusUtils.registerDispatcherFactory(binder(), //
-//                		FeedforwardFluidicRebalancingPolicy.class.getSimpleName(),
-//                		FeedforwardFluidicRebalancingPolicy.Factory.class);
-//            }
-//        });
-        
+        /** Register dispatchers - select the active dispatcher in av.xml */
         controller.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
-                AmodeusUtils.registerDispatcherFactory(binder(), //
+                AmodeusUtils.registerDispatcherFactory(binder(),
                         DemoDispatcher.class.getSimpleName(), DemoDispatcher.Factory.class);
             }
         });
-//        
-//        controller.addOverridingModule(new AbstractModule() {
-//            @Override
-//            public void install() {
-//                AmodeusUtils.registerDispatcherFactory(binder(), //
-//                        DemoDispatcherShared.class.getSimpleName(), DemoDispatcherShared.Factory.class);
-//            }
-//        });
+        controller.addOverridingModule(new AbstractModule() {
+            @Override
+            public void install() {
+                AmodeusUtils.registerDispatcherFactory(binder(),
+                        DemoDispatcherShared.class.getSimpleName(), DemoDispatcherShared.Factory.class);
+            }
+        });
 
         /** With the subsequent lines, additional user-defined initial placement logic called
          * generator is added,

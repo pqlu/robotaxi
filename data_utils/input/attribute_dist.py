@@ -1,105 +1,99 @@
 import re
+from typing import Dict, List, Set
 import pandas as pd
 
+
 class AttributeDistributions:
-    def __group_dist(self, base, groups):
-        mats = {}
+    """Loads and combines TTS (Toronto Travel Survey) cross-tabulation matrices
+    by demographic group into distributions indexed by origin ward."""
 
-        # Load matrices for each group
+    HEADER_LINES_TO_SKIP = 22
+    TABLE_PREFIX = 'TABLE'
+
+    def get_distributions(self, path: str, groups: range) -> Dict[int, pd.DataFrame]:
+        return self._group_distributions(path, groups)
+
+    def _group_distributions(self, base_path: str, groups: range) -> Dict[int, pd.DataFrame]:
+        matrices_by_group: Dict[int, Dict[int, pd.DataFrame]] = {}
+
         for group in groups:
-            f = '{}/group{}.txt'.format(base, group)
-            dfs = self.__load_matrices(f)
-            mats[group] = dfs
+            filepath = '{}/group{}.txt'.format(base_path, group)
+            matrices_by_group[group] = self._load_matrices(filepath)
 
-        # Keys are origin wards
-        keys = range(1, 45)
+        origin_wards = range(1, 45)
+        distributions: Dict[int, pd.DataFrame] = {}
 
-        dist = {}
-
-        # Combine different groups into distributions
-        for k in keys:
-            dfs = []
-
-            # Get the cross-tabulation for each group
-            for group in mats.keys():
-                if k in mats[group]:
-                    dfs.append(mats[group][k])
+        for ward in origin_wards:
+            ward_matrices = []
+            for group in matrices_by_group:
+                if ward in matrices_by_group[group]:
+                    ward_matrices.append(matrices_by_group[group][ward])
                 else:
-                    dfs.append(pd.DataFrame())
+                    ward_matrices.append(pd.DataFrame())
+            distributions[ward] = self._create_distribution(ward_matrices)
 
-            # Create the distribution for this key
-            dist[k] = self.__create_distribution(dfs)
-            
-        return dist
-   
-    def __load_matrices(self, f):
-        # Load text file
-        with open(f, 'r') as of:
-            raw = of.readlines()
-        L = list(map(str.strip, raw[22:]))
-        N = len(L)
+        return distributions
 
-        dfs = {}
-        for i in range(N):
-            # New matrix
-            if L[i][:5] == 'TABLE':
-                # Get origin ward
-                o = int(re.search(r"\d+", L[i]).group(0))
+    def _load_matrices(self, filepath: str) -> Dict[int, pd.DataFrame]:
+        with open(filepath, 'r') as file:
+            raw = file.readlines()
+        lines = list(map(str.strip, raw[self.HEADER_LINES_TO_SKIP:]))
+        num_lines = len(lines)
 
-                # Skip empty line
-                i += 2
+        matrices: Dict[int, pd.DataFrame] = {}
+        i = 0
+        while i < num_lines:
+            if lines[i][:5] == self.TABLE_PREFIX:
+                origin_ward = int(re.search(r"\d+", lines[i]).group(0))
+                i += 2  # skip empty line
 
-                # Get header
-                header = L[i].split()
+                header = lines[i].split()
                 i += 1
 
-                # Read matrix
-                mat = []
-                while i < N and L[i] != '':
-                    mat.append(L[i].split())
+                rows = []
+                while i < num_lines and lines[i] != '':
+                    rows.append(lines[i].split())
                     i += 1
-                df = pd.DataFrame(mat, columns=header).set_index('start_time')
+
+                df = pd.DataFrame(rows, columns=header).set_index('start_time')
                 df = df.astype('int32')
                 df = df.pivot(columns='ward_dest', values='total')
-                dfs[o] = df
-                
-        return dfs
+                matrices[origin_ward] = df
+            i += 1
 
-    def __create_distribution(self, dfs):
-        # Take in matrices for each group, and combine into one distribution
-        rows = set([i for m in dfs for i in m.index])
-        cols = set([i for m in dfs for i in m.columns])
-        N = len(dfs)
+        return matrices
 
-        # Impute missing columns
-        for c in cols:
-            for i in range(len(dfs)):
-                if c not in dfs[i].columns:
-                    dfs[i][c] = 0
+    def _create_distribution(self, group_matrices: List[pd.DataFrame]) -> pd.DataFrame:
+        all_rows: Set = set(idx for matrix in group_matrices for idx in matrix.index)
+        all_columns: Set = set(col for matrix in group_matrices for col in matrix.columns)
+        num_groups = len(group_matrices)
 
-        # Merge
-        res = dfs[0]
-        for i in range(1, N):
-            res = res.merge(dfs[i],
-                            how='outer',
-                            left_index=True,
-                            right_index=True,
-                            suffixes=[None, "_" + str(i)])
+        # Impute missing columns with zeros
+        for col in all_columns:
+            for i in range(num_groups):
+                if col not in group_matrices[i].columns:
+                    group_matrices[i][col] = 0
 
-        # Clean up
-        res.index = res.index.astype(int)
-        res.sort_index(inplace=True)
-        res.fillna(0, inplace=True)
+        # Merge all group matrices
+        result = group_matrices[0]
+        for i in range(1, num_groups):
+            result = result.merge(group_matrices[i],
+                                  how='outer',
+                                  left_index=True,
+                                  right_index=True,
+                                  suffixes=[None, "_" + str(i)])
 
-        # Merge column groups into lists
-        for c in cols:
-            col_group = [c] + ['{}_{}'.format(c, i) for i in range(1, N)]
-            res[c] = res[col_group].values.tolist()
+        result.index = result.index.astype(int)
+        result.sort_index(inplace=True)
+        result.fillna(0, inplace=True)
 
-        return res.loc[:, cols]
+        # Combine columns from each group into lists
+        for col in all_columns:
+            col_group = [col] + ['{}_{}'.format(col, i) for i in range(1, num_groups)]
+            result[col] = result[col_group].values.tolist()
 
-    def get_distributions(self, path, groups):
-        return self.__group_dist(path, groups)
+        return result.loc[:, all_columns]
+
 
 if __name__ == "__main__":
     age_path = 'tts/age'
@@ -108,7 +102,7 @@ if __name__ == "__main__":
     income_groups = range(1, 8)
 
     dists = AttributeDistributions()
-    
+
     print("Getting age distributions")
     age = dists.get_distributions(age_path, age_groups)
     print(age[1].head())
