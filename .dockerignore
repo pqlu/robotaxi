@@ -1,0 +1,10 @@
+.git/
+.env
+.env.*
+.claude/
+*.md
+images/
+data_utils/output/
+amod/target/
+amodtaxi/target/
+simulation/
